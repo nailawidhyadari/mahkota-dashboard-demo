@@ -26,9 +26,9 @@ export function Percakapan() {
         AI menjawab dari data resmi proyek, menghitung simulasi cicilan, lalu memberi label panas, hangat, atau dingin agar sales tahu siapa yang dihubungi lebih dulu.
       </PageHead>
 
-      <div className="grid gap-4 xl:grid-cols-[300px_1fr_290px]">
+      <div className="grid gap-4 md:grid-cols-[280px_1fr] xl:grid-cols-[300px_1fr_290px]">
         {/* Daftar lead */}
-        <Card className={`!p-0 ${detail ? "hidden xl:block" : ""}`}>
+        <Card className={`!p-0 md:row-span-2 xl:row-span-1 ${detail ? "max-md:hidden" : ""}`}>
           <div className="flex gap-1 border-b border-line p-3" role="tablist" aria-label="Filter lead">
             {filters.map((f) => {
               const n = f.id === "semua" ? leads.length : leads.filter((l) => l.skor === f.id).length;
@@ -38,7 +38,7 @@ export function Percakapan() {
                   role="tab"
                   aria-selected={filter === f.id}
                   onClick={() => setFilter(f.id)}
-                  className={`flex-1 rounded-lg px-2 py-1.5 text-xs font-semibold ${filter === f.id ? "bg-navy text-white" : "text-ink-2 hover:bg-surface-2"}`}
+                  className={`flex-1 whitespace-nowrap rounded-lg px-1 py-1.5 text-xs font-semibold ${filter === f.id ? "bg-navy text-white" : "text-ink-2 hover:bg-surface-2"}`}
                 >
                   {f.label} <span className="opacity-60">{n}</span>
                 </button>
@@ -49,7 +49,7 @@ export function Percakapan() {
             {list.map((l) => (
               <li key={l.id}>
                 <button
-                  onClick={() => { setAktif(l.id); setDetail(true); }}
+                  onClick={() => { setAktif(l.id); setDetail(true); window.scrollTo({ top: 0 }); }}
                   className={`flex w-full gap-3 px-4 py-3 text-left transition-colors ${aktif === l.id ? "bg-gold-soft/60" : "hover:bg-surface-2"}`}
                 >
                   <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-full text-xs font-bold" style={{ background: skorWarna[l.skor].bg, color: skorWarna[l.skor].fg }}>
@@ -73,12 +73,12 @@ export function Percakapan() {
         </Card>
 
         {/* Chat */}
-        <div className={`min-w-0 space-y-4 ${detail ? "" : "hidden xl:block xl:space-y-4"}`}>
-          <ChatPanel lead={lead} onBack={() => setDetail(false)} />
+        <div className={`min-w-0 ${detail ? "" : "max-md:hidden"}`}>
+          <ChatPanel lead={lead} onBack={() => { setDetail(false); window.scrollTo({ top: 0 }); }} />
         </div>
 
         {/* Profil */}
-        <div className={`${detail ? "" : "hidden xl:block"}`}>
+        <div className={`${detail ? "" : "max-md:hidden"}`}>
           <Profil key={lead.id} lead={lead} />
         </div>
       </div>
@@ -91,7 +91,7 @@ function ChatPanel({ lead, onBack }: { lead: Lead; onBack: () => void }) {
   return (
     <Card className="!p-0 overflow-hidden">
       <div className="flex items-center gap-3 border-b border-line bg-surface-2 px-4 py-3">
-        <button onClick={onBack} className="-ml-1 rounded-lg p-1.5 text-ink-2 hover:bg-line xl:hidden" aria-label="Kembali ke daftar">
+        <button onClick={onBack} className="-ml-1 rounded-lg p-1.5 text-ink-2 hover:bg-line md:hidden" aria-label="Kembali ke daftar">
           <Icon name="back" className="size-5" />
         </button>
         <div className="min-w-0 flex-1">
@@ -100,7 +100,7 @@ function ChatPanel({ lead, onBack }: { lead: Lead; onBack: () => void }) {
         </div>
         <SumberChip sumber={lead.sumber} />
       </div>
-      <div className="scroll-thin flex max-h-[720px] min-h-[320px] flex-col gap-3 overflow-y-auto bg-[#efeae0] p-4">
+      <div className="scroll-thin flex min-h-[320px] md:max-h-[560px] xl:max-h-[720px] flex-col gap-3 overflow-y-auto bg-[#efeae0] p-4">
         {lead.pesan.map((p, i) => (
           <Bubble key={i} p={p} />
         ))}

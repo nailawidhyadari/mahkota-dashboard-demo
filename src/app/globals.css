@@ -53,6 +53,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Anak grid/flex boleh menyusut; tanpa ini konten selebar tabel melebarkan seluruh halaman di HP. */
+.grid > * {
+  min-width: 0;
+}
+body {
+  overflow-x: clip;
+}
+
 .num {
   font-variant-numeric: tabular-nums;
 }

@@ -61,13 +61,13 @@ export function Ringkasan({ go }: { go: (v: "percakapan" | "iklan" | "survei" | 
             {trenLead.map((d) => {
               const t = d.meta + d.google + d.wa;
               return (
-                <div key={d.hari} className="flex flex-1 flex-col items-center gap-1">
-                  <div className="flex w-full flex-col-reverse overflow-hidden rounded-t-md" style={{ height: `${(t / maxTren) * 100}%` }} title={`${d.hari} Sep: ${t} lead`}>
+                <div key={d.hari} className="flex h-full flex-1 flex-col items-center justify-end gap-1">
+                  <div className="flex w-full flex-col-reverse overflow-hidden rounded-t-md" style={{ height: Math.round((t / maxTren) * 148) }} title={`${d.hari} Sep: ${t} lead`}>
                     <div style={{ flex: d.meta, background: "var(--meta)" }} />
                     <div style={{ flex: d.google, background: "var(--google)" }} />
                     <div style={{ flex: d.wa, background: "var(--wa)" }} />
                   </div>
-                  <span className="num text-[10px] text-ink-3">{d.hari}</span>
+                  <span className="num text-[10px] leading-none text-ink-3">{d.hari}</span>
                 </div>
               );
             })}

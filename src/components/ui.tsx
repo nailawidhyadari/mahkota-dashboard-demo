@@ -11,9 +11,9 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
 
 export function CardTitle({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
   return (
-    <div className="mb-4 flex items-start justify-between gap-3">
+    <div className="mb-4 flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
       <h2 className="font-display text-[17px] font-semibold leading-tight tracking-tight">{children}</h2>
-      {aside && <div className="shrink-0 text-xs text-ink-3">{aside}</div>}
+      {aside && <div className="text-xs text-ink-3">{aside}</div>}
     </div>
   );
 }
