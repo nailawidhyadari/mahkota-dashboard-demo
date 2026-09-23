@@ -22,14 +22,28 @@ type View = (typeof nav)[number]["id"];
 
 export function Dashboard() {
   const [view, setView] = useState<View>("ringkasan");
+  const [menu, setMenu] = useState(false);
 
   useEffect(() => {
     const h = window.location.hash.slice(1) as View;
     if (nav.some((n) => n.id === h)) queueMicrotask(() => setView(h));
   }, []);
 
+  useEffect(() => {
+    if (!menu) return;
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setMenu(false);
+    const wide = () => window.innerWidth >= 1024 && setMenu(false);
+    window.addEventListener("keydown", esc);
+    window.addEventListener("resize", wide);
+    return () => {
+      window.removeEventListener("keydown", esc);
+      window.removeEventListener("resize", wide);
+    };
+  }, [menu]);
+
   function go(v: View) {
     setView(v);
+    setMenu(false);
     window.history.replaceState(null, "", `#${v}`);
     window.scrollTo({ top: 0 });
   }
@@ -79,26 +93,45 @@ export function Dashboard() {
       </aside>
 
       <div className="min-w-0">
-        {/* Header mobile */}
+        {/* Header mobile & tablet: menu hamburger di kanan atas */}
         <div className="sticky top-0 z-30 bg-navy text-white lg:hidden">
-          <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-3 px-4 py-3">
             <Brand compact />
-            <Chip tone="gold">Prototipe</Chip>
-          </div>
-          <nav className="scroll-thin flex gap-1 overflow-x-auto px-3 pb-2" aria-label="Menu utama">
-            {nav.map((n) => (
+            <div className="ml-auto flex items-center gap-2">
+              <Chip tone="gold">Prototipe</Chip>
               <button
-                key={n.id}
-                onClick={() => go(n.id)}
-                aria-current={view === n.id ? "page" : undefined}
-                className={`whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium ${
-                  view === n.id ? "bg-white text-navy" : "text-white/70"
-                }`}
+                onClick={() => setMenu((m) => !m)}
+                aria-expanded={menu}
+                aria-controls="menu-mobile"
+                aria-label={menu ? "Tutup menu" : "Buka menu"}
+                className="grid size-10 place-items-center rounded-lg bg-white/10 hover:bg-white/15"
               >
-                {n.label}
+                <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+                  {menu ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+                </svg>
               </button>
-            ))}
-          </nav>
+            </div>
+          </div>
+          {menu && (
+            <nav id="menu-mobile" className="rise absolute inset-x-0 top-full border-t border-white/10 bg-navy px-3 pb-4 pt-2 shadow-xl" aria-label="Menu utama">
+              {nav.map((n) => (
+                <button
+                  key={n.id}
+                  onClick={() => go(n.id)}
+                  aria-current={view === n.id ? "page" : undefined}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-[15px] font-medium ${
+                    view === n.id ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/8"
+                  }`}
+                >
+                  <Icon name={n.icon} className="size-5" />
+                  <span className="flex-1">{n.label}</span>
+                  {"badge" in n && n.badge && (
+                    <span className="rounded-full bg-gold px-1.5 py-px text-[10px] font-bold text-navy">{n.badge}</span>
+                  )}
+                </button>
+              ))}
+            </nav>
+          )}
         </div>
 
         {/* Bar atas desktop */}
