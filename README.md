@@ -6,3 +6,5 @@ Mockup dashboard berdasarkan proposal AI Sales Agent untuk Mahkota Cileunyi. Ang
 npm install
 npm run dev
 ```
+
+Deploy: setiap push ke `main` otomatis dideploy ke Vercel.
